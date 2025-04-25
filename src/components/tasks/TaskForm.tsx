@@ -1,6 +1,6 @@
-// src/components/tasks/TaskForm.tsx
 import { useState } from 'react';
 import { useTasks } from '../../context/TaskContext';
+import type { Priority } from '../../context/TaskContext';
 
 export const TaskForm = () => {
   const [title, setTitle] = useState('');
@@ -26,44 +26,71 @@ export const TaskForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="mb-6 p-4 bg-gray-50 rounded-lg">
+    <div className="bg-white p-6 rounded-lg shadow-md">
       <h2 className="text-xl font-semibold mb-4">Nueva Tarea</h2>
-      <div className="grid gap-4">
-        <input
-          type="text"
-          placeholder="Título"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          className="p-2 border rounded"
-          required
-        />
-        <textarea
-          placeholder="Descripción"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          className="p-2 border rounded"
-        />
-        <div className="grid grid-cols-2 gap-4">
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Título *
+          </label>
           <input
-            type="date"
-            value={dueDate}
-            onChange={(e) => setDueDate(e.target.value)}
-            className="p-2 border rounded"
+            type="text"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md"
+            required
           />
-          <select
-            value={priority}
-            onChange={(e) => setPriority(e.target.value as 'low' | 'medium' | 'high')}
-            className="p-2 border rounded"
-          >
-            <option value="low">Baja</option>
-            <option value="medium">Media</option>
-            <option value="high">Alta</option>
-          </select>
         </div>
-        <button type="submit" className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600">
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Descripción
+          </label>
+          <textarea
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md"
+            rows={3}
+          />
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Fecha límite
+            </label>
+            <input
+              type="date"
+              value={dueDate}
+              onChange={(e) => setDueDate(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md"
+              min={new Date().toISOString().split('T')[0]}
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Prioridad *
+            </label>
+            <select
+              value={priority}
+              onChange={(e) => setPriority(e.target.value as 'low' | 'medium' | 'high')}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md"
+            >
+              <option value="low">Baja</option>
+              <option value="medium">Media</option>
+              <option value="high">Alta</option>
+            </select>
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700"
+        >
           Crear Tarea
         </button>
-      </div>
-    </form>
+      </form>
+    </div>
   );
 };
