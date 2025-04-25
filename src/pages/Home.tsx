@@ -1,36 +1,36 @@
-import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link } from 'react-router-dom';
 
 export const Home = () => {
   return (
-    <div className="min-h-screen bg-white flex flex-col items-center justify-center p-4">
-      <motion.div 
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="text-center"
-      >
-        <h1 className="text-4xl font-bold text-yellow-600 mb-6">TaskMaster</h1>
-        <div className="space-y-4">
-          <Link to="/auth/login">
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="w-full bg-primary text-white py-2 px-6 rounded-lg shadow-subtle"
-            >
-              Iniciar Sesión
-            </motion.button>
-          </Link>
-          <Link to="/auth/register">
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="w-full bg-white border-2 border-primary text-primary py-2 px-6 rounded-lg shadow-subtle"
-            >
-              Registrarse
-            </motion.button>
-          </Link>
-        </div>
-      </motion.div>
+    <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
+      {}
+      <img 
+        src="public/logoInicio.png" 
+        alt="Logo TaskMaster" 
+        className="w-24 h-24 mb-4"
+      />
+      
+      <h1 className="text-4xl font-bold text-gray-800 mb-8">Gestor de Tareas</h1>
+      
+      <div className="space-y-4 w-full max-w-xs">
+        <Link
+          to="/login"
+          className="block w-full bg-blue-600 text-white text-center py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors"
+        >
+          Iniciar Sesión
+        </Link>
+        <Link
+          to="/register"
+          className="block w-full bg-white text-gray-800 text-center py-3 px-4 rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors"
+        >
+          Registrarse
+        </Link>
+      </div>
+
+      {}
+      <div className="mt-8 text-sm text-gray-500">
+        v.1.0 © <span className="font-medium">Santiago Mendoza Meneses</span>
+      </div>
     </div>
   );
 };

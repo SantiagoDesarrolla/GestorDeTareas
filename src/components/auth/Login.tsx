@@ -12,45 +12,70 @@ export const Login = () => {
     e.preventDefault();
     try {
       await login(username, password);
-    } catch {
-      setError('Credenciales incorrectas');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Error desconocido');
     }
   };
 
   return (
     <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md">
-      <h2 className="text-2xl font-bold text-primary mb-4">Iniciar Sesión</h2>
-      {error && <p className="text-red-500 mb-4">{error}</p>}
+      <h1 className="text-2xl font-bold mb-6 text-center">Iniciar Sesión</h1>
+      
+      {error && (
+        <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md">
+          {error}
+          <div className="mt-2">
+            <Link to="/register" className="text-blue-600 hover:underline">
+              ¿No tienes cuenta? Regístrate
+            </Link>
+          </div>
+        </div>
+      )}
+
       <form onSubmit={handleSubmit} className="space-y-4">
-        <input
-          type="text"
-          placeholder="Usuario"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          className="w-full p-2 border rounded focus:ring-2 focus:ring-primary"
-          required
-        />
-        <input
-          type="password"
-          placeholder="Contraseña"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="w-full p-2 border rounded focus:ring-2 focus:ring-primary"
-          required
-        />
+        <div>
+          <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-1">
+            Usuario
+          </label>
+          <input
+            id="username"
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required
+            minLength={3}
+          />
+        </div>
+
+        <div>
+          <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+            Contraseña
+          </label>
+          <input
+            id="password"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required
+            minLength={6}
+          />
+        </div>
+
         <button
           type="submit"
-          className="w-full bg-primary text-white py-2 px-4 rounded hover:bg-yellow-600 transition"
+          className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors"
         >
           Ingresar
         </button>
       </form>
-      <p className="mt-4 text-center">
-        ¿No tienes cuenta?{' '}
-        <Link to="/auth/register" className="text-primary hover:underline">
-          Regístrate
+
+      <div className="mt-4 text-center">
+        <Link to="/register" className="text-blue-600 hover:underline">
+          Crear una nueva cuenta
         </Link>
-      </p>
+      </div>
     </div>
   );
 };

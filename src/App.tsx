@@ -1,19 +1,20 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { TaskProvider } from './context/TaskContext';
+import { PrivateRoute } from './components/auth/PrivateRoute';
 import { Home } from './pages/Home';
 import { AuthPage } from './pages/AuthPage';
 import { Dashboard } from './pages/Dashboard';
-import { PrivateRoute } from './components/auth/PrivateRoute';
 
-export default function App() {
+function App() {
   return (
-    <AuthProvider>
-      <TaskProvider>
-        <BrowserRouter>
+    <Router>
+      <AuthProvider>
+        <TaskProvider>
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/auth/*" element={<AuthPage />} />
+            <Route path="/login" element={<AuthPage type="login" />} />
+            <Route path="/register" element={<AuthPage type="register" />} />
             <Route
               path="/dashboard"
               element={
@@ -23,8 +24,10 @@ export default function App() {
               }
             />
           </Routes>
-        </BrowserRouter>
-      </TaskProvider>
-    </AuthProvider>
+        </TaskProvider>
+      </AuthProvider>
+    </Router>
   );
 }
+
+export default App;
