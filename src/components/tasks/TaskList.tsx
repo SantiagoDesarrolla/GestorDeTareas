@@ -1,75 +1,67 @@
-import React, { useState } from 'react';
+// src/components/tasks/TaskList.tsx
 import { useTasks } from '../../context/TaskContext';
 
-
 export const TaskList = () => {
-  const { tasks, toggleTaskCompletion } = useTasks();
-  const [searchTerm, setSearchTerm] = useState('');  // Ahora funcionará
-  const [filter, setFilter] = useState<'all' | 'pending' | 'completed'>('all');
-
-  const filteredTasks = tasks.filter((task) => {
-    const matchesSearch = task.title.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesFilter = filter === 'all' || 
-                         (filter === 'pending' && !task.completed) || 
-                         (filter === 'completed' && task.completed);
-    return matchesSearch && matchesFilter;
-  });
+  const { tasks, filter, setFilter } = useTasks();
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md">
-      <h2 className="text-xl font-bold text-yellow-600 mb-4">Tus Tareas</h2>
-      <div className="space-y-4 mb-6">
+    <div>
+      <div className="mb-4 flex gap-2">
         <input
           type="text"
           placeholder="Buscar tareas..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full p-2 border rounded focus:ring-2 focus:ring-yellow-500"
+          onChange={(e) => setFilter({ ...filter, search: e.target.value })}
+          className="p-2 border rounded flex-grow"
         />
         <select
-          value={filter}
-          onChange={(e) => setFilter(e.target.value as 'all' | 'pending' | 'completed')}
-          className="w-full p-2 border rounded focus:ring-2 focus:ring-yellow-500"
+          onChange={(e) => setFilter({ ...filter, status: e.target.value })}
+          className="p-2 border rounded"
         >
-          <option value="all">Todas</option>
+          <option value="all">Todos</option>
           <option value="pending">Pendientes</option>
+          <option value="in-progress">En progreso</option>
           <option value="completed">Completadas</option>
         </select>
+        <select
+          onChange={(e) => setFilter({ ...filter, priority: e.target.value })}
+          className="p-2 border rounded"
+        >
+          <option value="all">Todas</option>
+          <option value="low">Baja</option>
+          <option value="medium">Media</option>
+          <option value="high">Alta</option>
+        </select>
       </div>
-      <ul className="space-y-3">
-        {filteredTasks.map((task) => (
-          <li
-            key={task.id}
-            className={`p-4 border rounded ${task.completed ? 'bg-gray-50' : ''}`}
-          >
-            <div className="flex items-center">
-              <input
-                type="checkbox"
-                checked={task.completed}
-                onChange={() => toggleTaskCompletion(task.id)}
-                className="mr-2 h-5 w-5"
-              />
-              <div className="flex-1">
-                <h3 className={`font-bold ${task.completed ? 'line-through' : ''}`}>
-                  {task.title}
-                </h3>
-                <p className="text-gray-600">{task.description}</p>
-                <span
-                  className={`inline-block mt-2 px-2 py-1 text-xs rounded ${
-                    task.priority === 'high'
-                      ? 'bg-red-100 text-red-800'
-                      : task.priority === 'medium'
-                      ? 'bg-yellow-100 text-yellow-800'
-                      : 'bg-green-100 text-green-800'
-                  }`}
-                >
-                  {task.priority === 'high' ? 'Alta' : task.priority === 'medium' ? 'Media' : 'Baja'}
+
+      <div className="space-y-4">
+        {tasks.length === 0 ? (
+          <p className="text-gray-500">No hay tareas disponibles</p>
+        ) : (
+          tasks.map((task) => (
+            <div key={task.id} className="p-4 border rounded-lg">
+              <h3 className="font-semibold">{task.title}</h3>
+              <p className="text-gray-600">{task.description}</p>
+              <div className="flex justify-between items-center mt-2">
+                <span className={`px-2 py-1 text-xs rounded ${
+                  task.priority === 'high' ? 'bg-red-100 text-red-800' :
+                  task.priority === 'medium' ? 'bg-yellow-100 text-yellow-800' :
+                  'bg-green-100 text-green-800'
+                }`}>
+                  {task.priority}
+                </span>
+                <span>{task.dueDate}</span>
+                <span className={`px-2 py-1 text-xs rounded ${
+                  task.status === 'completed' ? 'bg-blue-100 text-blue-800' :
+                  task.status === 'in-progress' ? 'bg-purple-100 text-purple-800' :
+                  'bg-gray-100 text-gray-800'
+                }`}>
+                  {task.status}
                 </span>
               </div>
             </div>
-          </li>
-        ))}
-      </ul>
+          ))
+        )}
+      </div>
     </div>
   );
 };

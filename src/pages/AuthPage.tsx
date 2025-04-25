@@ -1,12 +1,14 @@
-import { Routes, Route } from "react-router-dom";
-import { Login } from "../components/auth/Login";
-import { Register } from "../components/auth/Register";
+import { Login } from '../components/auth/Login';
+import { Register } from '../components/auth/Register';
 
-export const AuthPage = () => {
+type AuthPageProps = {
+  type: 'login' | 'register';
+};
+
+export const AuthPage = ({ type }: AuthPageProps) => {
   return (
-    <Routes>
-      <Route path="login" element={<Login />} />
-      <Route path="register" element={<Register />} />
-    </Routes>
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+      {type === 'login' ? <Login /> : <Register />}
+    </div>
   );
 };
