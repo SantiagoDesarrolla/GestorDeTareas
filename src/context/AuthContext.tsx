@@ -19,7 +19,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  // Cargar usuario al iniciar
   useEffect(() => {
     const storedUser = localStorage.getItem('taskmaster-user');
     if (storedUser) {

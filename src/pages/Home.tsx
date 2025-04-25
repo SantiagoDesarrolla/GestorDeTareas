@@ -3,7 +3,15 @@ import { Link } from 'react-router-dom';
 export const Home = () => {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
-      <h1 className="text-4xl font-bold text-gray-800 mb-8">TaskMaster</h1>
+      {}
+      <img 
+        src="public/logoInicio.png" 
+        alt="Logo TaskMaster" 
+        className="w-24 h-24 mb-4"
+      />
+      
+      <h1 className="text-4xl font-bold text-gray-800 mb-8">Gestor de Tareas</h1>
+      
       <div className="space-y-4 w-full max-w-xs">
         <Link
           to="/login"
@@ -17,6 +25,11 @@ export const Home = () => {
         >
           Registrarse
         </Link>
+      </div>
+
+      {}
+      <div className="mt-8 text-sm text-gray-500">
+        v.1.0 © <span className="font-medium">Santiago Mendoza Meneses</span>
       </div>
     </div>
   );

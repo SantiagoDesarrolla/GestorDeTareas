@@ -9,7 +9,6 @@ export const TaskList = () => {
   const [priorityFilter, setPriorityFilter] = useState<'all' | Priority>('all');
   const [editingTask, setEditingTask] = useState<Task | null>(null);
 
-  // Filtrar tareas
   const filteredTasks = tasks.filter(task => {
     const matchesSearch = 
       task.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
@@ -24,7 +23,6 @@ export const TaskList = () => {
     return matchesSearch && matchesStatus && matchesPriority;
   });
 
-  // Manejar edición
   const handleEditSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (editingTask) {
@@ -40,7 +38,7 @@ export const TaskList = () => {
 
   return (
     <div className="space-y-6">
-      {/* Filtros y búsqueda */}
+      {}
       <div className="bg-white p-4 rounded-lg shadow-md">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
@@ -90,7 +88,7 @@ export const TaskList = () => {
         </div>
       </div>
 
-      {/* Modal de edición */}
+      {}
       {editingTask && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
           <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-md">
@@ -175,7 +173,7 @@ export const TaskList = () => {
         </div>
       )}
 
-      {/* Listado de tareas */}
+      {}
       <div className="space-y-4">
         {filteredTasks.length === 0 ? (
           <div className="bg-white p-6 rounded-lg shadow-md text-center">

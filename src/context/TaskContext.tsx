@@ -28,7 +28,6 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const { user } = useAuth();
 
-  // Cargar tareas al iniciar o cambiar de usuario
   useEffect(() => {
     if (user) {
       const savedTasks = localStorage.getItem(`taskmaster-tasks-${user}`);
@@ -36,7 +35,6 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [user]);
 
-  // Guardar tareas cuando cambian
   useEffect(() => {
     if (user && tasks.length > 0) {
       localStorage.setItem(`taskmaster-tasks-${user}`, JSON.stringify(tasks));

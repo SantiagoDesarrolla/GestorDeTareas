@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from 'axios';
-import type { Task } from '../context/TaskContext'; // Importa el tipo con 'type'
+import type { Task } from '../context/TaskContext'; 
 
 const API_URL = "http://tu-backend.com/api/tasks";
 
@@ -15,15 +15,3 @@ export const taskService = {
   }
 };
 
-// Versión alternativa con mock (elige solo una)
-/*
-export const taskService = {
-  createTask: (task: Omit<Task, 'id' | 'completed'>): Promise<Task> => {
-    return Promise.resolve({
-      ...task,
-      id: Date.now().toString(),
-      completed: false
-    });
-  }
-};
-*/
