@@ -1,17 +1,40 @@
-import axios, { AxiosResponse } from 'axios';
-import type { Task } from '../context/TaskContext'; 
+import axios from "axios";
+import type { Task, Priority, Status } from "../context/TaskContext";
 
-const API_URL = "http://tu-backend.com/api/tasks";
+const API_URL = import.meta.env.VITE_API_URL;
+
+const getAuthHeader = () => ({
+  headers: { 
+    Authorization: `Bearer ${localStorage.getItem("token")}` 
+  }
+});
 
 export const taskService = {
-  createTask: (task: Omit<Task, 'id' | 'completed'>): Promise<AxiosResponse<Task>> => {
-    return axios.post(API_URL, task);
+  getTasks: async (): Promise<Task[]> => {
+    const response = await axios.get(`${API_URL}/tasks`, getAuthHeader());
+    return response.data;
   },
-  getTasks: (): Promise<AxiosResponse<Task[]>> => {
-    return axios.get(API_URL);
+  createTask: async (task: Omit<Task, "id" | "userId">): Promise<Task> => {
+    const response = await axios.post(`${API_URL}/tasks`, task, getAuthHeader());
+    return response.data;
   },
-  toggleTask: (id: string): Promise<AxiosResponse<Task>> => {
-    return axios.patch(`${API_URL}/${id}/toggle`);
+  updateTask: async (id: string, updates: Partial<Task>): Promise<Task> => {
+    const response = await axios.patch(
+      `${API_URL}/tasks/${id}`, 
+      updates, 
+      getAuthHeader()
+    );
+    return response.data;
+  },
+  deleteTask: async (id: string): Promise<void> => {
+    await axios.delete(`${API_URL}/tasks/${id}`, getAuthHeader());
+  },
+  toggleTaskStatus: async (id: string): Promise<Task> => {
+    const response = await axios.patch(
+      `${API_URL}/tasks/${id}/toggle`, 
+      {}, 
+      getAuthHeader()
+    );
+    return response.data;
   }
 };
-

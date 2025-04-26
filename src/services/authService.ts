@@ -1,12 +1,24 @@
 import axios from "axios";
 
-const API_URL = "http://tu-backend.com/api/auth";
+const API_URL = import.meta.env.VITE_API_URL;
 
 export const authService = {
-  login: (username: string, password: string) => {
-    return axios.post(`${API_URL}/login`, { username, password });
+  login: async (username: string, password: string) => {
+    const response = await axios.post(`${API_URL}/auth/login`, { 
+      username, 
+      password 
+    });
+    return response.data;
   },
-  register: (username: string, password: string) => {
-    return axios.post(`${API_URL}/register`, { username, password });
+  register: async (username: string, password: string) => {
+    const response = await axios.post(`${API_URL}/auth/register`, { 
+      username, 
+      password 
+    });
+    return response.data;
   },
+  logout: () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+  }
 };

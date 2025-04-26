@@ -5,7 +5,7 @@ export const Home = () => {
     <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
       {}
       <img 
-        src="public/logoInicio.png" 
+        src="/logoInicio.png" 
         alt="Logo TaskMaster" 
         className="w-24 h-24 mb-4"
       />

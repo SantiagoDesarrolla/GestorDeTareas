@@ -3,16 +3,20 @@ import { useTasks } from '../../context/TaskContext';
 import type { Task, Status, Priority } from '../../context/TaskContext';
 
 export const TaskList = () => {
-  const { tasks, updateTask, deleteTask, toggleTaskStatus } = useTasks();
+  const { tasks, isLoading, error, updateTask, deleteTask, toggleTaskStatus } = useTasks();
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<'all' | Status>('all');
   const [priorityFilter, setPriorityFilter] = useState<'all' | Priority>('all');
   const [editingTask, setEditingTask] = useState<Task | null>(null);
 
+  // Manejo de estados de carga/error
+  if (isLoading) return <div className="text-center py-8">Cargando tareas...</div>;
+  if (error) return <div className="text-red-500 p-4">{error}</div>;
+
   const filteredTasks = tasks.filter(task => {
     const matchesSearch = 
       task.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
-      task.description.toLowerCase().includes(searchTerm.toLowerCase());
+      task.description?.toLowerCase().includes(searchTerm.toLowerCase());
     
     const matchesStatus = 
       statusFilter === 'all' || task.status === statusFilter;
@@ -23,22 +27,26 @@ export const TaskList = () => {
     return matchesSearch && matchesStatus && matchesPriority;
   });
 
-  const handleEditSubmit = (e: React.FormEvent) => {
+  const handleEditSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (editingTask) {
-      updateTask(editingTask.id, {
-        title: editingTask.title,
-        description: editingTask.description,
-        dueDate: editingTask.dueDate,
-        priority: editingTask.priority
-      });
-      setEditingTask(null);
+      try {
+        await updateTask(editingTask.id, {
+          title: editingTask.title,
+          description: editingTask.description,
+          dueDate: editingTask.dueDate,
+          priority: editingTask.priority
+        });
+        setEditingTask(null);
+      } catch (err) {
+        console.error("Error al actualizar tarea:", err);
+      }
     }
   };
 
   return (
     <div className="space-y-6">
-      {}
+      {/* Filtros */}
       <div className="bg-white p-4 rounded-lg shadow-md">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
@@ -88,7 +96,7 @@ export const TaskList = () => {
         </div>
       </div>
 
-      {}
+      {/* Modal de edición */}
       {editingTask && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
           <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-md">
@@ -113,7 +121,7 @@ export const TaskList = () => {
                     Descripción
                   </label>
                   <textarea
-                    value={editingTask.description}
+                    value={editingTask.description || ''}
                     onChange={(e) => setEditingTask({...editingTask, description: e.target.value})}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md"
                     rows={3}
@@ -127,7 +135,7 @@ export const TaskList = () => {
                     </label>
                     <input
                       type="date"
-                      value={editingTask.dueDate}
+                      value={editingTask.dueDate || ''}
                       onChange={(e) => setEditingTask({...editingTask, dueDate: e.target.value})}
                       className="w-full px-3 py-2 border border-gray-300 rounded-md"
                     />
@@ -173,7 +181,7 @@ export const TaskList = () => {
         </div>
       )}
 
-      {}
+      {/* Lista de tareas */}
       <div className="space-y-4">
         {filteredTasks.length === 0 ? (
           <div className="bg-white p-6 rounded-lg shadow-md text-center">

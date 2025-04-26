@@ -1,17 +1,20 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { Link } from 'react-router-dom';
 
 export const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const { login } = useAuth();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError('');
     try {
       await login(username, password);
+      navigate('/dashboard');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error desconocido');
     }
@@ -25,9 +28,9 @@ export const Login = () => {
         <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md">
           {error}
           <div className="mt-2">
-            <Link to="/register" className="text-blue-600 hover:underline">
+            <a href="/register" className="text-blue-600 hover:underline">
               ¿No tienes cuenta? Regístrate
-            </Link>
+            </a>
           </div>
         </div>
       )}
@@ -72,9 +75,9 @@ export const Login = () => {
       </form>
 
       <div className="mt-4 text-center">
-        <Link to="/register" className="text-blue-600 hover:underline">
+        <a href="/register" className="text-blue-600 hover:underline">
           Crear una nueva cuenta
-        </Link>
+        </a>
       </div>
     </div>
   );

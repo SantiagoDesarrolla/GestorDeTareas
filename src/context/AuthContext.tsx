@@ -1,85 +1,76 @@
-import { createContext, useContext, ReactNode, useState, useEffect } from 'react';
+import { createContext, useContext, ReactNode, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
-type UserCredentials = {
-  username: string;
-  password: string;
-};
 
 type AuthContextType = {
   user: string | null;
   login: (username: string, password: string) => Promise<void>;
   logout: () => void;
   register: (username: string, password: string) => Promise<void>;
+  error: string | null;
 };
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<string | null>(null);
+  const [user, setUser] = useState<string | null>(localStorage.getItem('taskmaster-user'));
+  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const storedUser = localStorage.getItem('taskmaster-user');
-    if (storedUser) {
-      setUser(storedUser);
-    }
-  }, []);
-
   const login = async (username: string, password: string): Promise<void> => {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        const usersJSON = localStorage.getItem('taskmaster-users');
-        const users: UserCredentials[] = usersJSON ? JSON.parse(usersJSON) : [];
-        
-        const validUser = users.find(u => u.username === username && u.password === password);
-        
-        if (validUser) {
-          setUser(username);
-          localStorage.setItem('taskmaster-user', username);
-          navigate('/dashboard');
-          resolve();
-        } else {
-          reject(new Error('Credenciales incorrectas'));
-        }
-      }, 500);
-    });
+    try {
+      const usersJSON = localStorage.getItem('taskmaster-users');
+      const users: { username: string; password: string }[] = usersJSON ? JSON.parse(usersJSON) : [];
+      const validUser = users.find(u => u.username === username && u.password === password);
+
+      if (!validUser) {
+        throw new Error('Credenciales incorrectas');
+      }
+
+      setUser(username);
+      localStorage.setItem('taskmaster-user', username);
+      setError(null);
+      navigate('/dashboard');
+    } catch (err) {
+      setError('Credenciales incorrectas');
+      throw err;
+    }
   };
 
   const register = async (username: string, password: string): Promise<void> => {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        const usersJSON = localStorage.getItem('taskmaster-users');
-        const users: UserCredentials[] = usersJSON ? JSON.parse(usersJSON) : [];
-        
-        if (users.some(u => u.username === username)) {
-          reject(new Error('El usuario ya existe'));
-        } else {
-          const newUsers = [...users, { username, password }];
-          localStorage.setItem('taskmaster-users', JSON.stringify(newUsers));
-          setUser(username);
-          localStorage.setItem('taskmaster-user', username);
-          navigate('/dashboard');
-          resolve();
-        }
-      }, 500);
-    });
+    try {
+      const usersJSON = localStorage.getItem('taskmaster-users');
+      const users: { username: string; password: string }[] = usersJSON ? JSON.parse(usersJSON) : [];
+
+      if (users.some(u => u.username === username)) {
+        throw new Error('El usuario ya existe');
+      }
+
+      const newUsers = [...users, { username, password }];
+      localStorage.setItem('taskmaster-users', JSON.stringify(newUsers));
+      setUser(username);
+      localStorage.setItem('taskmaster-user', username);
+      setError(null);
+      navigate('/dashboard');
+    } catch (err) {
+      setError('Error al registrar');
+      throw err;
+    }
   };
 
-  const logout = (): void => {
-    setUser(null);
+  const logout = () => {
     localStorage.removeItem('taskmaster-user');
+    setUser(null);
     navigate('/login');
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, register }}>
+    <AuthContext.Provider value={{ user, login, logout, register, error }}>
       {children}
     </AuthContext.Provider>
   );
 };
 
-export const useAuth = () => {
+export const useAuth = (): AuthContextType => {
   const context = useContext(AuthContext);
   if (!context) {
     throw new Error('useAuth must be used within an AuthProvider');

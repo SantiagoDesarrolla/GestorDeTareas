@@ -7,8 +7,8 @@ export type Status = 'pending' | 'in-progress' | 'completed';
 export type Task = {
   id: string;
   title: string;
-  description: string;
-  dueDate: string;
+  description?: string;
+  dueDate?: string;
   priority: Priority;
   status: Status;
   userId: string;
@@ -20,21 +20,29 @@ type TaskContextType = {
   updateTask: (id: string, updates: Partial<Task>) => void;
   deleteTask: (id: string) => void;
   toggleTaskStatus: (id: string) => void;
+  error: string | null;
 };
 
 const TaskContext = createContext<TaskContextType | undefined>(undefined);
 
 export const TaskProvider = ({ children }: { children: ReactNode }) => {
   const [tasks, setTasks] = useState<Task[]>([]);
+  const [error, setError] = useState<string | null>(null);
   const { user } = useAuth();
 
+  // Cargar tareas al iniciar
   useEffect(() => {
     if (user) {
-      const savedTasks = localStorage.getItem(`taskmaster-tasks-${user}`);
-      setTasks(savedTasks ? JSON.parse(savedTasks) : []);
+      try {
+        const savedTasks = localStorage.getItem(`taskmaster-tasks-${user}`);
+        setTasks(savedTasks ? JSON.parse(savedTasks) : []);
+      } catch (err) {
+        setError("Error al cargar tareas");
+      }
     }
   }, [user]);
 
+  // Guardar tareas en localStorage cuando cambian
   useEffect(() => {
     if (user && tasks.length > 0) {
       localStorage.setItem(`taskmaster-tasks-${user}`, JSON.stringify(tasks));
@@ -47,7 +55,8 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
     const newTask: Task = {
       ...task,
       id: Date.now().toString(),
-      userId: user
+      userId: user,
+      status: 'pending', // Estado por defecto
     };
     setTasks([...tasks, newTask]);
   };
@@ -76,7 +85,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <TaskContext.Provider 
-      value={{ tasks, addTask, updateTask, deleteTask, toggleTaskStatus }}
+      value={{ tasks, addTask, updateTask, deleteTask, toggleTaskStatus, error }}
     >
       {children}
     </TaskContext.Provider>
