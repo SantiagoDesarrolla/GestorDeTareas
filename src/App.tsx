@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
-import { TaskProvider } from './context/TaskContext'; // Importa el TaskProvider
+import { TaskProvider } from './context/TaskContext';
 import { PrivateRoute } from './components/auth/PrivateRoute';
 import { Home } from './pages/Home';
 import { Login } from './components/auth/Login';
@@ -11,7 +11,7 @@ function App() {
   return (
     <Router>
       <AuthProvider>
-        <TaskProvider> {/* Envuelve con TaskProvider */}
+        <TaskProvider>
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
